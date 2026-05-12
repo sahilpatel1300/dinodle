@@ -30,11 +30,12 @@ def clean_name(name: str) -> str:
     return name.strip()
 
 def save_metadata(dino: dict) -> dict:
-    return {
-        key: dino.get(key)
-        for key in METADATA_KEYS
-    }
+    clean_dino = {}
 
+    for key in METADATA_KEYS: 
+        clean_dino[key] = dino.get(key)
+
+    return clean_dino
 
 def main():
     # open file

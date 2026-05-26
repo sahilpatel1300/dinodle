@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dirdle &mdash; The Daily Dinosaur Wordle</title>
+  <meta name="description" content="Guess the 10-letter dinosaur name in 7 tries. A new dinosaur every day!">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-side header-left">
+      <button id="btn-help" class="icon-btn" aria-label="How to play">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="header-center">
+      <div class="title-group">
+        <h1 class="site-title">DIRDLE</h1>
+        <span class="title-dino" aria-hidden="true">&#x1F995;</span>
+      </div>
+      <p class="site-subtitle">The Daily Dinosaur Wordle</p>
+    </div>
+
+    <div class="header-side header-right">
+      <button id="btn-share-header" class="icon-btn share-icon-btn hidden" aria-label="Share results">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+          <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Toast ──────────────────────────────────────────────────────────── -->
+  <div id="toast-container" aria-live="assertive" aria-atomic="true">
+    <div id="toast" class="toast hidden" role="status"></div>
+  </div>
+
+  <!-- ── Game ───────────────────────────────────────────────────────────── -->
+  <main class="game-wrap">
+    <div id="board" class="board" role="grid" aria-label="Dirdle game board"></div>
+    <div id="keyboard" class="keyboard" role="group" aria-label="On-screen keyboard"></div>
+  </main>
+
+  <!-- ── Help Modal ─────────────────────────────────────────────────────── -->
+  <div id="modal-help" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="help-title">
+    <div class="modal-box">
+      <button class="modal-close" data-modal="modal-help" aria-label="Close">&#x2715;</button>
+      <h2 id="help-title" class="modal-title">How to Play</h2>
+
+      <p class="modal-body">Guess the <strong>DIRDLE</strong> in 7 tries. Each guess must be exactly 10 letters.</p>
+
+      <p class="modal-body">After each guess the tiles will reveal how close you were:</p>
+
+      <div class="help-example">
+        <div class="example-row">
+          <div class="tile" data-state="correct">A</div>
+          <div class="tile" data-state="absent">L</div>
+          <div class="tile" data-state="absent">L</div>
+          <div class="tile" data-state="absent">O</div>
+          <div class="tile" data-state="absent">S</div>
+          <div class="tile" data-state="absent">A</div>
+          <div class="tile" data-state="absent">U</div>
+          <div class="tile" data-state="absent">R</div>
+          <div class="tile" data-state="absent">U</div>
+          <div class="tile" data-state="absent">S</div>
+        </div>
+        <p class="example-desc"><strong>A</strong> is in the correct spot.</p>
+      </div>
+
+      <div class="help-example">
+        <div class="example-row">
+          <div class="tile" data-state="absent">T</div>
+          <div class="tile" data-state="present">R</div>
+          <div class="tile" data-state="absent">I</div>
+          <div class="tile" data-state="absent">C</div>
+          <div class="tile" data-state="absent">E</div>
+          <div class="tile" data-state="absent">R</div>
+          <div class="tile" data-state="absent">A</div>
+          <div class="tile" data-state="absent">T</div>
+          <div class="tile" data-state="absent">O</div>
+          <div class="tile" data-state="absent">P</div>
+        </div>
+        <p class="example-desc"><strong>R</strong> is in the word but in the wrong spot.</p>
+      </div>
+
+      <div class="help-example">
+        <div class="example-row">
+          <div class="tile" data-state="absent">D</div>
+          <div class="tile" data-state="absent">I</div>
+          <div class="tile" data-state="absent">P</div>
+          <div class="tile" data-state="absent">L</div>
+          <div class="tile" data-state="absent">O</div>
+          <div class="tile" data-state="absent">D</div>
+          <div class="tile" data-state="absent">O</div>
+          <div class="tile" data-state="absent">C</div>
+          <div class="tile" data-state="absent">U</div>
+          <div class="tile" data-state="absent">S</div>
+        </div>
+        <p class="example-desc">No letters shown are in the word at all.</p>
+      </div>
+
+      <hr class="modal-divider">
+      <p class="modal-body center">A new dinosaur is revealed every day at <strong>midnight EST</strong>.</p>
+    </div>
+  </div>
+
+  <!-- ── Dino Dossier Modal ─────────────────────────────────────────────── -->
+  <div id="modal-dossier" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="dossier-title">
+    <div class="modal-box dossier-box">
+      <button class="modal-close" data-modal="modal-dossier" aria-label="Close">&#x2715;</button>
+      <div id="dossier-body"></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,524 @@
+/* ══════════════════════════════════════════════════════════════
+   DIRDLE — The Daily Dinosaur Wordle
+   Fossil / prehistoric colour theme.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Variables ──────────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg:            #121210;
+  --header-bg:     #1a1914;
+  --header-border: #2e2c26;
+
+  /* Tile states */
+  --tile-correct:  #c9981a;   /* amber gold  – "excavated!" */
+  --tile-present:  #8b6e3c;   /* earthy tan  – "in the dig" */
+  --tile-absent:   #3a3a3c;   /* stone gray  – "not found"  */
+
+  /* Tile chrome */
+  --tile-empty-border:  #3a3830;
+  --tile-filled-border: #86847c;
+  --tile-text:          #ffffff;
+
+  /* Keyboard */
+  --key-bg:       #4a4840;
+  --key-text:     #f0e8d0;
+  --key-absent-bg:#3a3a3e;
+  --key-absent-fg:#666;
+
+  /* Text */
+  --text-primary:  #f0e8d0;
+  --text-secondary:#a09880;
+  --text-muted:    #65635c;
+
+  /* Modal */
+  --modal-bg:     #1e1d18;
+  --modal-border: #35332c;
+
+  /* Toast */
+  --toast-bg:  #f0e8d0;
+  --toast-fg:  #1a1814;
+
+  /* Tile geometry */
+  --tile-size: 52px;
+  --tile-gap:  5px;
+  --board-max: calc(10 * var(--tile-size) + 9 * var(--tile-gap));
+}
+
+@media (max-width: 560px) {
+  :root {
+    --tile-size: clamp(28px, 8.5vw, 46px);
+    --tile-gap:  4px;
+  }
+}
+
+/* ── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  height: 52px;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+  flex-shrink: 0;
+}
+
+.header-side {
+  width: 72px;
+  display: flex;
+  align-items: center;
+}
+.header-right { justify-content: flex-end; }
+
+.header-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+}
+
+.title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.site-title {
+  font-size: clamp(1.3rem, 5vw, 1.65rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--text-primary);
+}
+
+.title-dino { font-size: 1.15rem; }
+
+.site-subtitle {
+  font-size: 0.58rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ── Icon buttons ────────────────────────────────────────────── */
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  padding: 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.08); }
+
+/* ── Utility ─────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ── Toast ───────────────────────────────────────────────────── */
+#toast-container {
+  position: fixed;
+  top: 62px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--toast-bg);
+  color: var(--toast-fg);
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+
+/* ── Game layout ─────────────────────────────────────────────── */
+.game-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 8px 6px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Board ───────────────────────────────────────────────────── */
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tile-gap);
+  flex: 1;
+  justify-content: center;
+  max-width: var(--board-max);
+  width: 100%;
+}
+
+.board-row {
+  display: flex;
+  gap: var(--tile-gap);
+  justify-content: center;
+}
+
+/* ── Tiles ───────────────────────────────────────────────────── */
+.tile {
+  width: var(--tile-size);
+  height: var(--tile-size);
+  border: 2px solid var(--tile-empty-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.85rem, 2.2vw, 1.25rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--tile-text);
+  background: transparent;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.tile[data-state='filled'] {
+  border-color: var(--tile-filled-border);
+}
+.tile[data-state='correct'] {
+  background: var(--tile-correct);
+  border-color: var(--tile-correct);
+}
+.tile[data-state='present'] {
+  background: var(--tile-present);
+  border-color: var(--tile-present);
+}
+.tile[data-state='absent'] {
+  background: var(--tile-absent);
+  border-color: var(--tile-absent);
+}
+
+/* Pop when a letter is typed */
+@keyframes tile-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+.tile.pop { animation: tile-pop 0.1s ease; }
+
+/* Shake on invalid word */
+@keyframes row-shake {
+  0%, 100% { transform: translateX(0); }
+  15%, 55%  { transform: translateX(-5px); }
+  35%, 75%  { transform: translateX(5px); }
+}
+.board-row.shake { animation: row-shake 0.45s ease; }
+
+/* Bounce on win */
+@keyframes tile-bounce {
+  0%, 20%  { transform: translateY(0); }
+  40%      { transform: translateY(-18px); }
+  60%      { transform: translateY(-8px); }
+  80%      { transform: translateY(-14px); }
+  100%     { transform: translateY(0); }
+}
+.tile.bounce { animation: tile-bounce 0.85s ease forwards; }
+
+/* ── Keyboard ────────────────────────────────────────────────── */
+.keyboard {
+  width: 100%;
+  max-width: 520px;
+  padding: 0 6px 4px;
+  flex-shrink: 0;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.key {
+  height: 58px;
+  min-width: 34px;
+  flex: 1;
+  max-width: 44px;
+  padding: 0 4px;
+  border: none;
+  border-radius: 4px;
+  background: var(--key-bg);
+  color: var(--key-text);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s, filter 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.key:active { filter: brightness(0.82); }
+
+.key.wide {
+  flex: 1.5;
+  max-width: 66px;
+  font-size: 0.72rem;
+  letter-spacing: -0.01em;
+}
+
+.key[data-state='correct'] { background: var(--tile-correct); color: #fff; }
+.key[data-state='present']  { background: var(--tile-present); color: #fff; }
+.key[data-state='absent']   { background: var(--key-absent-bg); color: var(--key-absent-fg); }
+
+/* ── Modals ──────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: overlay-in 0.18s ease;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-box {
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border);
+  border-radius: 12px;
+  padding: 28px 24px 24px;
+  max-width: 460px;
+  width: 100%;
+  position: relative;
+  max-height: 90dvh;
+  overflow-y: auto;
+  animation: box-in 0.2s ease;
+}
+
+@keyframes box-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.15rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+
+.modal-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-bottom: 14px;
+  color: var(--text-primary);
+}
+
+.modal-body {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.modal-body.center { text-align: center; }
+
+.modal-divider {
+  border: none;
+  border-top: 1px solid var(--modal-border);
+  margin: 14px 0;
+}
+
+/* ── Help examples ───────────────────────────────────────────── */
+.help-example { margin-bottom: 14px; }
+
+.example-row {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 6px;
+}
+
+.example-row .tile {
+  width: 28px;
+  height: 28px;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.example-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ── Dossier modal ───────────────────────────────────────────── */
+.dossier-box { padding: 30px 22px 24px; }
+
+.dossier-result {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.dossier-result-label {
+  font-size: 0.78rem;
+  margin-bottom: 6px;
+}
+
+.result-win  { color: var(--tile-correct); font-weight: 700; font-size: 0.9rem; }
+.result-loss { color: var(--text-secondary); font-size: 0.85rem; }
+
+.dossier-dino-name {
+  font-size: clamp(1.3rem, 6vw, 1.8rem);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: var(--tile-correct);
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+.dossier-sublabel {
+  display: block;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Dossier info grid */
+.dossier-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+  margin-bottom: 18px;
+}
+
+.dossier-field { display: flex; flex-direction: column; gap: 2px; }
+
+.dossier-field-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.dossier-field-value {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.35;
+  text-transform: capitalize;
+}
+
+.dossier-field-value.na {
+  color: var(--text-muted);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Countdown */
+.dossier-countdown {
+  text-align: center;
+  margin-bottom: 16px;
+  padding: 10px 0;
+  border-top: 1px solid var(--modal-border);
+  border-bottom: 1px solid var(--modal-border);
+}
+
+.dossier-countdown-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.dossier-countdown-timer {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+/* Share button */
+.dossier-actions { display: flex; justify-content: center; }
+
+.btn-share {
+  background: var(--tile-correct);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 13px 36px;
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+.btn-share:hover  { filter: brightness(1.12); }
+.btn-share:active { filter: brightness(0.88); }
+
+/* ── Win celebration ─────────────────────────────────────────── */
+.footprints-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 900;
+  overflow: hidden;
+}
+
+@keyframes fp-appear {
+  0%   { opacity: 0; transform: scale(0.4) rotate(var(--rot)); }
+  35%  { opacity: 1; transform: scale(1.3) rotate(var(--rot)); }
+  60%  { opacity: 1; transform: scale(1)   rotate(var(--rot)); }
+  100% { opacity: 0; transform: scale(1)   rotate(var(--rot)); }
+}
+
+.footprint {
+  position: absolute;
+  font-size: 1.6rem;
+  opacity: 0;
+  animation: fp-appear 2.2s ease forwards;
+  animation-delay: var(--delay);
+}

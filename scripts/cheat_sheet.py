@@ -54,11 +54,14 @@ def day_index(dt_utc: datetime.datetime) -> int:
     return int((dt_utc.timestamp() - EST_OFFSET) // 86400)
 
 def day_index_to_date(idx: int) -> datetime.date:
-    ts = idx * 86400 + EST_OFFSET
-    return datetime.datetime.utcfromtimestamp(ts).date()
+    # Day index is the UTC calendar day number, so multiply back to get UTC midnight.
+    ts = idx * 86400
+    return datetime.datetime.fromtimestamp(ts, tz=datetime.timezone.utc).date()
 
+# LAUNCH_IDX must match getDayIndexEST() on May 26 EST, which equals the UTC calendar
+# day number for May 26 (the EST offset cancels out in getDayIndexEST).
 LAUNCH = datetime.datetime(2026, 5, 26, tzinfo=datetime.timezone.utc)
-LAUNCH_IDX = day_index(LAUNCH)
+LAUNCH_IDX = int(LAUNCH.timestamp() // 86400)
 TODAY_IDX  = day_index(datetime.datetime.now(datetime.timezone.utc))
 
 # ── Print ────────────────────────────────────────────────────────────────────

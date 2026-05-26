@@ -2,8 +2,10 @@ import { DINOSAUR_LIST } from '../frontend_data/dinosaurs.js';
 
 const SHUFFLE_SEED = 20260512;
 
-// Launch date: May 26, 2026. Day index in EST (UTC-5).
-const LAUNCH_DAY_INDEX = Math.floor((Date.UTC(2026, 4, 26) - 5 * 3600 * 1000) / 86400000);
+// Launch date: May 26, 2026.
+// getDayIndexEST() returns Math.floor(utcMs / 86400000) after subtracting the 5h offset,
+// which equals the UTC calendar day index. Using Date.UTC / 86400000 (no offset) matches that.
+const LAUNCH_DAY_INDEX = Math.floor(Date.UTC(2026, 4, 26) / 86400000);
 
 function mulberry32(seed) {
   return function () {
@@ -32,8 +34,10 @@ export function getDayIndexEST() {
 }
 
 export function getTodayDino() {
-  const idx = getDayIndexEST() % SHUFFLED_LIST.length;
-  return SHUFFLED_LIST[idx];
+  // Offset from launch day so puzzle #1 = SHUFFLED_LIST[0] on launch day,
+  // puzzle #2 = SHUFFLED_LIST[1] the next day, etc.
+  const offset = ((getDayIndexEST() - LAUNCH_DAY_INDEX) % SHUFFLED_LIST.length + SHUFFLED_LIST.length) % SHUFFLED_LIST.length;
+  return SHUFFLED_LIST[offset];
 }
 
 export function getPuzzleNumber() {

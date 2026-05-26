@@ -11,9 +11,9 @@
   --header-border: #2e2c26;
 
   /* Tile states */
-  --tile-correct:  #c9981a;   /* amber gold  – "excavated!" */
-  --tile-present:  #8b6e3c;   /* earthy tan  – "in the dig" */
-  --tile-absent:   #3a3a3c;   /* stone gray  – "not found"  */
+  --tile-correct:  #538d4e;   /* green  – correct position  */
+  --tile-present:  #b59f3b;   /* yellow – wrong position    */
+  --tile-absent:   #3a3a3c;   /* stone gray  – not in word  */
 
   /* Tile chrome */
   --tile-empty-border:  #3a3830;

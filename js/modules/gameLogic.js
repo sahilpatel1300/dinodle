@@ -53,7 +53,7 @@ export function generateShareText(evaluatedRows, won, puzzleNumber, maxGuesses) 
     .map(row => row.map(cell => emojiMap[cell.state]).join(''))
     .join('\n');
 
-  return `${header}\n\n${rows}`;
+  return `${header}\n\n${rows}\n\nsahilpatel1300.github.io/dinodle`;
 }
 
 /** Priority used to determine which letter state "wins" on the keyboard. */

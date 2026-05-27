@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'dirdle_state';
+const STORAGE_KEY = 'dinodle_state';
 
 export function loadState() {
   try {

@@ -1,5 +1,5 @@
 """
-Prints the full Dirdle puzzle order — every dinosaur, every date.
+Prints the full Dinodle puzzle order — every dinosaur, every date.
 Run from the repo root:  python scripts/cheat_sheet.py
 """
 

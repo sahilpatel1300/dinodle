@@ -40,7 +40,7 @@ export function showDinoModal(dino, won, shareText) {
     </div>
 
     <div class="dossier-countdown">
-      <div class="dossier-countdown-label">Next Dirdle in</div>
+      <div class="dossier-countdown-label">Next Dinodle in</div>
       <div class="dossier-countdown-timer" id="countdown-timer">--:--:--</div>
     </div>
 

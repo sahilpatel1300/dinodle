@@ -45,7 +45,7 @@ export function isWin(evaluated) {
  */
 export function generateShareText(evaluatedRows, won, puzzleNumber, maxGuesses) {
   const guessCount = won ? evaluatedRows.length : 'X';
-  const header = `Dirdle \uD83E\uDD95 #${puzzleNumber} ${guessCount}/${maxGuesses}`;
+  const header = `Dinodle \uD83E\uDD95 #${puzzleNumber} ${guessCount}/${maxGuesses}`;
 
   const emojiMap = { correct: '\uD83D\uDFE9', present: '\uD83D\uDFE8', absent: '\u2B1B' };
 
